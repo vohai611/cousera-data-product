@@ -11,13 +11,13 @@ library(shiny)
 
 # setup -----------
 df = read_rds(here("data/billboard.rds"))
+song_select = df %>% distinct(song, performer) 
+songs = read_rds(here("data/songs.rds"))
 
-performer_style = read_rds(here("data/performer_style.rds"))
-
-
-more_than_20 = df %>% 
-  count(performer) %>% 
-  filter(n >= 20)
+# 
+# more_than_20 = df %>% 
+#   count(performer) %>% 
+#   filter(n >= 20)
 
 n_songs = df %>% 
 group_by(performer) %>% 
@@ -35,37 +35,41 @@ famous_rank = df %>%
   mutate(rank = row_number())
 
 
-performer_names = more_than_20$performer
+performer_names = unique(df$performer)
+
 # function---
-mean_rank_plot= function(input){
-  p1 =df %>% 
-    select(week_id, week_position, song, performer) %>% 
-    filter(performer == input) %>% 
-    mutate(week_id = lubridate::mdy(week_id),
-           year= lubridate::year(week_id),
-           week_position = 100 - week_position) %>%
-    complete(year= 1990:2020) %>% 
-    group_by(year) %>% 
-    summarise(position = mean(week_position)) %>% 
-    ggplot(aes(year, position))+
-    geom_col()+
+song_rank = function(performer, song){
+  song_rank = df %>% 
+    filter(performer == {{ performer }}, song == {{ song}}) %>% 
+    mutate(week_id = lubridate::mdy(week_id)) %>% 
+    transmute(week = lubridate::week(week_id), year= lubridate::year(week_id), 
+              week_position) %>% 
+    arrange(week, year) %>% 
+    mutate(wyear= factor(paste0(week,"-", year))) %>% 
+    ggplot(aes(wyear, week_position))+
+    geom_point()+
     theme_light()+
-    labs(x= "", y = "rank")+
-    scale_y_continuous(labels = rev(seq(0, 100, by = 20)), breaks = seq(0,100, by = 20))
+    theme(axis.text.x = element_text(angle = 90))+
+    labs(y = "Rank", x= "Week-year")
   
-    p1
+  ggplotly(song_rank) %>% 
+    config(displayModeBar = FALSE)
 }
 
 
 # Server side ----------
 shinyServer(function(input, output, session) {
+  ## Update UI ---
   updateSelectizeInput(session, "performer",selected = "Mariah Carey",
                          choices = performer_names,server = TRUE)
+  observeEvent(input$performer, updateSelectInput(session,
+                                                  "song_selected",
+                                                  choices = song_select[song_select$performer == input$performer, ]$song ))
 
   ## Info box -----
   output$famous_rank = renderInfoBox(
     infoBox(title = "Famous rank",
-            value =  famous_rank[famous_rank$performer == input$performer, ]$rank
+            value =  paste0("#", famous_rank[famous_rank$performer == input$performer, ]$rank)
             )
   )
   output$n_song_top = renderInfoBox(
@@ -112,10 +116,11 @@ shinyServer(function(input, output, session) {
   
   # summarize performer style
 
-  performer_style_react = reactive({
-    performer_style %>% 
-      filter(performer == input$performer) %>% 
-      select(-performer)
+  song_selected = reactive({
+    songs %>% 
+      filter(performer == input$performer,
+             song == input$song_selected) %>% 
+      select(-performer, -song)
   })
 
   
@@ -123,8 +128,8 @@ shinyServer(function(input, output, session) {
   output$performer_radar = renderPlotly({
     
     plot_ly(type = "scatterpolar",
-            r = performer_style_react()[1,] %>% as.numeric(),
-            theta = names(performer_style_react()),
+            r = song_selected()[1,] %>% as.numeric(),
+            theta = names(song_selected()),
             fill= 'toself') %>% 
       layout(
         polar = list(
@@ -138,8 +143,8 @@ shinyServer(function(input, output, session) {
       config(displayModeBar= FALSE)#
   })
   
-  output$mean_rank_plot = renderPlot({
-    mean_rank_plot(input$performer)
+  output$song_rank = renderPlotly({
+    song_rank(input$performer, input$song_selected)
   })
   
 })

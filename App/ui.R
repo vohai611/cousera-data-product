@@ -38,11 +38,11 @@ shinyUI(tagList(
         infoBoxOutput("n_week_top10")
       ),
       fluidRow(column(width = 6,
-                      h2("Performer style"),
+                      h2("Song characteristics"),
                       plotlyOutput("performer_radar")),
                column(width = 6,
                       h2("Ranking over years"),
-                      plotOutput("mean_rank_plot")))
+                      plotlyOutput("song_rank")))
       
       
     )

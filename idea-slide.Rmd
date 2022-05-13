@@ -1,0 +1,65 @@
+---
+title: "Idea present"
+subtitle: "😀 😀 😀 <br/> Course project"
+author: "Hai vo"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+
+
+# Idea
+
+  -   Shiny web-app
+  
+  -   Present BillBoard dataset
+  
+  -   Use `shinydashboard`, `shinyjs`, `plotly`
+  
+  -   Source [data](https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-09-14/readme.md)
+  
+---
+# The App
+
+Link to
+
+
+---
+
+
+# Main dataset
+
+The main data set contain BillBoard data - top 100s
+
+```{r}
+bb = readRDS("data/billboard.rds")
+bb[c("song", "week_id", "week_position", "performer")] |>
+  head(20) |>
+  DT::datatable()
+```
+
+
+---
+# Addtional dataset 
+
+There are additional data set about the characteristics of song, for example: `energy`, `danceablity`, ` acoustcness`, etc
+
+```{r}
+song = readRDS("data/songs.rds")
+tail(song[,c("song", "energy", "valence", "danceability")], n =5)
+```
+
+---
+
+# Thank you!

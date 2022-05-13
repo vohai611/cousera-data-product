@@ -1,0 +1,13 @@
+name: Billboard-performers
+title: Billboard-performers
+username:
+account: haivo
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6297286
+bundleId: 5903470
+url: https://haivo.shinyapps.io/Billboard-performers/
+when: 1652458950.90752
+lastSyncTime: 1652458950.90752
+asMultiple: FALSE
+asStatic: FALSE

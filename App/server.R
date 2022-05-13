@@ -49,7 +49,7 @@ song_rank = function(performer, song){
     ggplot(aes(wyear, week_position))+
     geom_point()+
     theme_light()+
-    theme(axis.text.x = element_text(angle = 90))+
+    theme(axis.text.x = element_text(angle = 45))+
     labs(y = "Rank", x= "Week-year")
   
   ggplotly(song_rank) %>% 
@@ -87,7 +87,7 @@ shinyServer(function(input, output, session) {
   ## On-click box -----
   onclick("box1", 
           showModal(modalDialog(
-            title = "Songs",
+            title = "Famous Rank",
             renderDataTable({
               song_of_performer()
             }))))
@@ -98,6 +98,18 @@ shinyServer(function(input, output, session) {
             renderDataTable({
               famous_rank
             }))))
+  
+   onclick("manual", 
+          showModal(modalDialog(
+            title = "Welcome!",
+            renderText("
+                       Welcome to my Course project app!.
+                       This app is extremely simple to use, You just need to choose
+                       Artis + their song on the sidebar.
+                       You can also click on the info box to take a look at the data.
+                       ")
+            )))
+  
   
   
   output$n_song_top10 = renderInfoBox(

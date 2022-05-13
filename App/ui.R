@@ -24,6 +24,7 @@ shinyUI(tagList(
     title = "Billboard dashboard",
     header = dashboardHeader(),
     sidebar = dashboardSidebar(
+      div(id= "manual", h3("Manual")),
       selectizeInput("performer", label = "Performer: ", choices = NULL),
       selectInput("song_selected", "Feature song", choices = NULL)
     ),

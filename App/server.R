@@ -8,11 +8,11 @@
 #
 
 library(shiny)
-
+here::i_am("App/ui.R")
 # setup -----------
-df = read_rds(here("data/billboard.rds"))
+df = read_rds(here("App/data/billboard.rds"))
 song_select = df %>% distinct(song, performer) 
-songs = read_rds(here("data/songs.rds"))
+songs = read_rds(here("App/data/songs.rds"))
 
 # 
 # more_than_20 = df %>% 

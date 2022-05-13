@@ -15,6 +15,7 @@ output:
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
+library(here)
 ```
 
 
@@ -32,8 +33,13 @@ options(htmltools.dir.version = FALSE)
 ---
 # The App
 
-Link to
+1. Link to [App](https://haivo.shinyapps.io/Billboard-performers/)
 
+2. Manual
+
+  -   You just need to choose artist and their song on the sidebar
+  
+  -   You can click on the the info-box to look at summary data
 
 ---
 
@@ -43,7 +49,7 @@ Link to
 The main data set contain BillBoard data - top 100s
 
 ```{r}
-bb = readRDS("data/billboard.rds")
+bb = readRDS(here("App/data/billboard.rds"))
 bb[c("song", "week_id", "week_position", "performer")] |>
   head(20) |>
   DT::datatable()
@@ -56,7 +62,7 @@ bb[c("song", "week_id", "week_position", "performer")] |>
 There are additional data set about the characteristics of song, for example: `energy`, `danceablity`, ` acoustcness`, etc
 
 ```{r}
-song = readRDS("data/songs.rds")
+song = readRDS(here("App/data/songs.rds"))
 tail(song[,c("song", "energy", "valence", "danceability")], n =5)
 ```
 
